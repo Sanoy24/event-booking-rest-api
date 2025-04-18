@@ -5,10 +5,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sanoy24/event-booking-rest-api/database"
 	"github.com/sanoy24/event-booking-rest-api/models"
 )
 
 func main() {
+	databse.InitializeDb()
 	server := gin.Default()
 
 	server.GET("/events", getEvents)
@@ -19,7 +21,10 @@ func main() {
 }
 
 func getEvents(ctx *gin.Context) {
-	events := models.GetAllEvents()
+	events, err := models.GetAllEvents()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "could not fetch events"})
+	}
 	ctx.JSON(http.StatusOK, events)
 }
 
@@ -36,7 +41,10 @@ func createEvent(ctx *gin.Context) {
 	event.UserID = 1
 	event.ID = 1
 
-	event.Save()
+	err = event.Save()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "could not create events"})
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"message": "Event create successfully", "data": event})
 }
