@@ -1,6 +1,9 @@
 package models
 
-import databse "github.com/sanoy24/event-booking-rest-api/database"
+import (
+	databse "github.com/sanoy24/event-booking-rest-api/database"
+	"github.com/sanoy24/event-booking-rest-api/utils"
+)
 
 type User struct {
 	ID       int64
@@ -19,8 +22,13 @@ func (u User) Save() error {
 		return err
 	}
 	defer stmt.Close()
-
-	result, err := stmt.Exec(u.Email, u.Password)
+	var hashedPassword string
+	hashedPassword, err = utils.HashPassword(u.Password)
+	if err != nil {
+		return err
+	}
+	// u.Password = hashedPassword
+	result, err := stmt.Exec(u.Email, hashedPassword)
 
 	if err != nil {
 		return err
