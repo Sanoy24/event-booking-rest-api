@@ -61,5 +61,26 @@ func GetAllEvents() ([]Event, error) {
 		events = append(events, event)
 
 	}
+	if rows.Err() != nil {
+		return nil, err
+	}
 	return events, nil
+}
+
+func GetEventById(id int64) ([]Event, error) {
+	query := "SELECT * FROM events WHERE id=?"
+
+	row := databse.DB.QueryRow(query, id)
+
+	var event Event
+
+	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+
+	if err != nil {
+		return nil, err
+	}
+	events = append(events, event)
+
+	return events, nil
+
 }
