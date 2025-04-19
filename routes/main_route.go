@@ -7,5 +7,6 @@ func InitRoutes(router *gin.Engine) {
 	{
 		eventsRoutes(v1)
 		usersRoutes(v1)
+		authRoutes(v1)
 	}
 }

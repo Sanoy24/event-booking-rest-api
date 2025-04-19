@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type Response struct {
 	Data    any    `json:"data"`
 }
 
-func getEvents(ctx *gin.Context) {
+func GetEvents(ctx *gin.Context) {
 	events, err := models.GetAllEvents()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "could not fetch events"})
@@ -23,7 +23,7 @@ func getEvents(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, events)
 }
 
-func getSingleEvent(ctx *gin.Context) {
+func GetSingleEvent(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 
 	if err != nil {
@@ -45,7 +45,7 @@ func getSingleEvent(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func createEvent(ctx *gin.Context) {
+func CreateEvent(ctx *gin.Context) {
 	var event models.Event
 	err := ctx.ShouldBindJSON(&event)
 
@@ -66,7 +66,7 @@ func createEvent(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{"message": "Event create successfully", "data": event})
 }
 
-func updateEvent(ctx *gin.Context) {
+func UpdateEvent(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 
 	if err != nil {
@@ -102,7 +102,7 @@ func updateEvent(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Updated event successfully"})
 }
 
-func deleteEvent(ctx *gin.Context) {
+func DeleteEvent(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 
 	if err != nil {

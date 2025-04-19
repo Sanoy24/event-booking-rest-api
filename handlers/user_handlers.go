@@ -1,4 +1,4 @@
-package routes
+package handlers
 
 import (
 	"net/http"
@@ -7,10 +7,10 @@ import (
 	"github.com/sanoy24/event-booking-rest-api/models"
 )
 
-func signUp(ctx *gin.Context) {
+func SignUp(ctx *gin.Context) {
 	var user models.User
 
-	err := ctx.BindJSON(&user)
+	err := ctx.ShouldBindJSON(&user)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request payloaf"})
