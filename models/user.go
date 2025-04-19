@@ -49,16 +49,19 @@ func (u User) Save() error {
 
 }
 
-func (u User) ValidateCredentials() error {
+func (u *User) ValidateCredentials() error {
 	query := "SELECT id,password from users WHERE email = ?"
 	row := databse.DB.QueryRow(query, u.Email)
 
 	var retrievedPassword string
+	var userId int64
 
-	err := row.Scan(&u.ID, &retrievedPassword)
+	err := row.Scan(&userId, &retrievedPassword)
+	fmt.Println("_________", userId)
 	if err != nil {
 		return err
 	}
+	u.ID = userId
 	retrievedPassword = strings.TrimSpace(retrievedPassword)
 	fmt.Println(retrievedPassword)
 	pp, _ := utils.HashPassword(u.Password)

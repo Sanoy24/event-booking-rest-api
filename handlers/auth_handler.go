@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,8 @@ func Login(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "incorrect username or password"})
 		return
 	}
+
+	fmt.Println(user)
 
 	token, err := utils.GenerateToken(user.Email, user.ID)
 

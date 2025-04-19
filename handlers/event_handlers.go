@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sanoy24/event-booking-rest-api/models"
+	"github.com/sanoy24/event-booking-rest-api/utils"
 )
 
 type Response struct {
@@ -46,8 +48,30 @@ func GetSingleEvent(ctx *gin.Context) {
 }
 
 func CreateEvent(ctx *gin.Context) {
+	token := ctx.Request.Header.Get("Authorization")
+	fmt.Println(token)
+	if token == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Not Authorizedd"})
+		return
+	}
+
+	parsedToken := strings.SplitN(token, " ", 2)
+	fmt.Println(parsedToken)
+
+	if len(parsedToken) != 2 || parsedToken[0] != "Bearer" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid header format"})
+		return
+	}
+	token = parsedToken[1]
+
+	userId, err := utils.VerifyToken(token)
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Not Authorizedddd"})
+		return
+	}
 	var event models.Event
-	err := ctx.ShouldBindJSON(&event)
+	err = ctx.ShouldBindJSON(&event)
 
 	if err != nil {
 
@@ -55,8 +79,7 @@ func CreateEvent(ctx *gin.Context) {
 		return
 	}
 
-	event.UserID = 1
-	event.ID = 1
+	event.UserID = int(userId)
 
 	err = event.Save()
 	if err != nil {
