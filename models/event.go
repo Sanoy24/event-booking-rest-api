@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	databse "github.com/sanoy24/event-booking-rest-api/database"
@@ -82,5 +83,23 @@ func GetEventById(id int64) ([]Event, error) {
 	events = append(events, event)
 
 	return events, nil
+
+}
+
+func (event Event) Update() error {
+	query := `UPDATE events
+	SET name =?,description=?,location=?,date_time=? WHERE id = ?
+	`
+	stmt, err := databse.DB.Prepare(query)
+	fmt.Println(stmt)
+
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	fmt.Println(event)
+	_, err = stmt.Exec(event.Name, event.Description, event.Location, event.DateTime, event.ID)
+
+	return err
 
 }
