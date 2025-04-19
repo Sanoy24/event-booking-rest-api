@@ -89,6 +89,12 @@ func UpdateEvent(ctx *gin.Context) {
 		return
 	}
 
+	userId := ctx.GetInt64("userId")
+
+	if userId != int64(updatedEvent.UserID) {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized to update event"})
+	}
+
 	updatedEvent.ID = id
 
 	err = updatedEvent.Update()
@@ -116,6 +122,12 @@ func DeleteEvent(ctx *gin.Context) {
 	}
 	var event models.Event
 	event.ID = id
+
+	userId := ctx.GetInt64("userId")
+
+	if userId != int64(event.UserID) {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized to delete event"})
+	}
 
 	err = event.DeleteEvent()
 	if err != nil {
