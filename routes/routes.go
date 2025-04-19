@@ -2,10 +2,14 @@ package routes
 
 import "github.com/gin-gonic/gin"
 
-func InitRoutes(server *gin.Engine) {
+func eventsRoutes(eventGroup *gin.RouterGroup) {
 
-	server.GET("/events", getEvents)
-	server.GET("/events/:id", getSingleEvent)
-	server.POST("/events", createEvent)
-	server.PATCH("/events/:id", updateEvent)
+	events := eventGroup.Group("/events")
+	{
+		events.GET("/", getEvents)
+		events.GET("/:id", getSingleEvent)
+		events.POST("/", createEvent)
+		events.PATCH("/:id", updateEvent)
+		events.DELETE("/:id", deleteEvent)
+	}
 }
