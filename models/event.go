@@ -68,21 +68,20 @@ func GetAllEvents() ([]Event, error) {
 	return events, nil
 }
 
-func GetEventById(id int64) ([]Event, error) {
+func GetEventById(id int64) (Event, error) {
+	var event Event
 	query := "SELECT * FROM events WHERE id=?"
 
 	row := databse.DB.QueryRow(query, id)
 
-	var event Event
-
 	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
 
 	if err != nil {
-		return nil, err
+		return Event{}, err
 	}
-	events = append(events, event)
+	// events = append(events, event)
 
-	return events, nil
+	return event, nil
 
 }
 
@@ -116,4 +115,16 @@ func (event Event) DeleteEvent() error {
 
 	return err
 
+}
+func (e Event) Register(userId int64) error {
+	query := "INSERT INTO registrations(event_id,user_id) VALUES (?,?)"
+	stmt, err := databse.DB.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.ID, userId)
+	return err
 }

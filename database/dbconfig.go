@@ -23,13 +23,27 @@ func InitializeDb() {
 
 func createTable() {
 
+	createRegistrationTable := `
+	CREATE TABLE IF NOT EXISTS users(
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		event_id INTEGER,
+		user_id INTEGER,
+		FOREIGN KEY(event_id) REFERENCES events(id),
+		FOREIGN KEY(user_id) REFERENCES users(id)
+		
+		`
+	_, err := DB.Exec(createRegistrationTable)
+	if err != nil {
+		panic("error while creating registration table")
+	}
+
 	createUsersTable := ` CREATE TABLE IF NOT EXISTS users(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL
 	)
 	`
-	_, err := DB.Exec(createUsersTable)
+	_, err = DB.Exec(createUsersTable)
 
 	if err != nil {
 		panic("error while creating users tabel")

@@ -18,6 +18,8 @@ func eventsRoutes(eventGroup *gin.RouterGroup) {
 		protected.POST("", handlers.CreateEvent)
 		protected.PATCH("/:id", handlers.UpdateEvent)
 		protected.DELETE("/:id", handlers.DeleteEvent)
+		protected.DELETE("/:id/register")
+		protected.POST("/:id/register")
 	}
 
 }
